@@ -1,0 +1,196 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║     🌐 NIFTY 50 INTRADAY SCANNER - WEB VERSION                      ║
+║     Deploy to Render in 10 Minutes!                                 ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+🎯 WHAT YOU'LL GET:
+
+✅ Live web scanner accessible from anywhere
+✅ No installation needed - just open the link
+✅ Auto-refreshes every 5 minutes
+✅ Works on mobile, tablet, desktop
+✅ Free hosting on Render
+✅ Entry/Exit levels for all Nifty 50 stocks
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 DEPLOY IN 3 STEPS (10 MINUTES):
+
+┌─ STEP 1: Create GitHub Repository (3 min) ────────────────────────┐
+│                                                                    │
+│  1. Go to: https://github.com                                     │
+│  2. Click: "+" → "New repository"                                 │
+│  3. Name: nifty50-intraday-scanner                                │
+│  4. Public repository                                             │
+│  5. Click: "Create repository"                                    │
+│                                                                    │
+│  6. In Web_Scanner folder, run:                                   │
+│     > git init                                                    │
+│     > git add .                                                   │
+│     > git commit -m "Initial commit"                              │
+│     > git branch -M main                                          │
+│     > git remote add origin https://github.com/YOUR_USERNAME/     │
+│       nifty50-intraday-scanner.git                                │
+│     > git push -u origin main                                     │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 2: Deploy on Render (5 min) ────────────────────────────────┐
+│                                                                    │
+│  1. Go to: https://render.com                                     │
+│  2. Sign up with GitHub                                           │
+│  3. Click: "New +" → "Web Service"                                │
+│  4. Connect: nifty50-intraday-scanner repository                  │
+│  5. Configure:                                                    │
+│     Name: nifty50-scanner                                         │
+│     Environment: Python 3                                         │
+│     Build Command: pip install -r requirements.txt                │
+│     Start Command: gunicorn app:app                               │
+│     Plan: Free                                                    │
+│  6. Click: "Create Web Service"                                   │
+│  7. Wait 5-10 minutes for deployment                              │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 3: Access Your Scanner (1 min) ─────────────────────────────┐
+│                                                                    │
+│  Your scanner will be live at:                                    │
+│  https://nifty50-scanner.onrender.com                             │
+│                                                                    │
+│  📌 Bookmark this URL!                                            │
+│  📱 Add to mobile home screen!                                    │
+│  🔗 Share with friends!                                           │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 HOW TO USE:
+
+1. Open the link in your browser
+2. Wait 10-20 seconds for data to load (first time)
+3. View top trading opportunities
+4. Check entry, stop loss, and target prices
+5. Click "Refresh" button for latest data
+6. Auto-refreshes every 5 minutes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 FEATURES:
+
+✅ Live analysis of all 50 Nifty stocks
+✅ Color-coded signals (Green=Buy, Red=Sell)
+✅ Precise entry/exit levels
+✅ Stop loss and target prices
+✅ Risk:Reward ratios
+✅ Trading strategies
+✅ Technical indicators (RSI, Volume, Trend)
+✅ Mobile responsive design
+✅ Auto-refresh every 5 minutes
+✅ Manual refresh button
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ TECHNICAL DETAILS:
+
+Framework: Flask (Python)
+Hosting: Render (Free Tier)
+Data Source: Yahoo Finance
+Update Frequency: 5 minutes
+Cache Duration: 5 minutes
+Auto-Refresh: Yes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ IMPORTANT NOTES:
+
+📌 Render Free Tier:
+   - Service spins down after 15 min of inactivity
+   - First load after inactivity takes 30-60 seconds
+   - Subsequent loads are instant
+   - 750 hours/month free (enough for daily use)
+
+📌 Solution:
+   - Bookmark and open daily
+   - Or upgrade to paid plan ($7/month) for always-on
+
+📌 No Credit Card Required:
+   - Free tier is truly free
+   - No hidden costs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 TROUBLESHOOTING:
+
+Issue: Deployment failed
+→ Check Render logs for errors
+→ Verify all files are in GitHub
+→ See DEPLOYMENT_GUIDE.md for solutions
+
+Issue: TA-Lib installation error
+→ Remove TA-Lib from requirements.txt
+→ Use pandas-based RSI (see README.md)
+→ Push changes to GitHub
+
+Issue: Slow loading
+→ Normal on free tier after inactivity
+→ Wait 30 seconds on first load
+→ Subsequent loads are fast
+
+Issue: Data not updating
+→ Check if market is open
+→ Click Refresh button
+→ Check browser console (F12)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 FILES INCLUDED:
+
+app.py                  → Main Flask application
+templates/index.html    → Web interface
+requirements.txt        → Python dependencies
+Procfile               → Render configuration
+runtime.txt            → Python version
+.gitignore             → Git ignore rules
+README.md              → Complete documentation
+DEPLOYMENT_GUIDE.md    → Step-by-step deployment
+QUICK_DEPLOY.txt       → This file
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 DOCUMENTATION:
+
+Quick Start:    QUICK_DEPLOY.txt (this file)
+Full Guide:     DEPLOYMENT_GUIDE.md
+Features:       README.md
+Local Testing:  python app.py (then open localhost:5000)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ DEPLOYMENT CHECKLIST:
+
+[ ] Created GitHub account
+[ ] Created GitHub repository
+[ ] Pushed code to GitHub
+[ ] Created Render account
+[ ] Connected GitHub to Render
+[ ] Configured web service
+[ ] Deployment successful
+[ ] Tested live URL
+[ ] Bookmarked URL
+[ ] Added to mobile home screen
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 YOU'RE ALL SET!
+
+Your scanner will be live at:
+https://nifty50-scanner.onrender.com
+
+Access it anytime, anywhere, from any device!
+
+Happy Trading! 📊📈
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
