@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nifty 50 Intraday Scanner - Live</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .refresh-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background: white;
+            color: #1e3c72;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+        
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .ticker {
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 1.1em;
+        }
+        
+        .positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .negative {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .signal {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        
+        .signal-strong-buy { background: #28a745; color: white; }
+        .signal-buy { background: #20c997; color: white; }
+        .signal-neutral { background: #6c757d; color: white; }
+        .signal-sell { background: #fd7e14; color: white; }
+        .signal-strong-sell { background: #dc3545; color: white; }
+        
+        .entry-box {
+            background: #fff3cd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            table { font-size: 0.85em; }
+            th, td { padding: 8px 5px; }
+            .refresh-btn { position: static; margin-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 NIFTY 50 INTRADAY SCANNER</h1>
+            <p id="timestamp">Loading...</p>
+            <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
+        </div>
+        
+        <div id="stats-container" class="stats">
+            <div class="stat-card">
+                <h3>Total Stocks</h3>
+                <div class="value" id="stat-total">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Strong Buy</h3>
+                <div class="value" style="color: #28a745;" id="stat-strong-buy">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Buy Signals</h3>
+                <div class="value" style="color: #20c997;" id="stat-buy">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Risk:Reward</h3>
+                <div class="value" style="color: #0066cc;" id="stat-rr">-</div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <h2 style="margin-bottom: 20px; color: #1e3c72;">🎯 Live Trading Opportunities</h2>
+            <div id="loading" class="loading">Loading market data...</div>
+            <table id="data-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Ticker</th>
+                        <th>LTP (₹)</th>
+                        <th>Change %</th>
+                        <th>Signal</th>
+                        <th>Entry</th>
+                        <th>Stop Loss</th>
+                        <th>Target 1</th>
+                        <th>Target 2</th>
+                        <th>R:R</th>
+                        <th>Strategy</th>
+                        <th>RSI</th>
+                        <th>Vol Ratio</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Trading Tips:</strong> Use stop losses | Trade liquid stocks | Avoid first/last 15 min | Book profits at targets</p>
+            <p style="margin-top: 10px;">⚠️ For educational purposes only. Not financial advice. Trade at your own risk.</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Auto-refreshes every 5 minutes | Data: Yahoo Finance</p>
+        </div>
+    </div>
+    
+    <script>
+        function loadData() {
+            fetch('/api/scanner')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update timestamp
+                        document.getElementById('timestamp').textContent = data.timestamp;
+                        
+                        // Update stats
+                        document.getElementById('stat-total').textContent = data.stats.total;
+                        document.getElementById('stat-strong-buy').textContent = data.stats.strong_buy;
+                        document.getElementById('stat-buy').textContent = data.stats.buy;
+                        document.getElementById('stat-rr').textContent = data.stats.avg_risk_reward;
+                        
+                        // Update table
+                        const tbody = document.getElementById('table-body');
+                        tbody.innerHTML = '';
+                        
+                        data.data.forEach((row, index) => {
+                            const tr = document.createElement('tr');
+                            const signalClass = row.signal.toLowerCase().replace(' ', '-');
+                            const changeClass = row.change_pct > 0 ? 'positive' : 'negative';
+                            
+                            tr.innerHTML = `
+                                <td><strong>#${index + 1}</strong></td>
+                                <td class="ticker">${row.ticker}</td>
+                                <td><strong>₹${row.ltp}</strong></td>
+                                <td class="${changeClass}">${row.change_pct > 0 ? '+' : ''}${row.change_pct}%</td>
+                                <td><span class="signal signal-${signalClass}">${row.signal}</span></td>
+                                <td class="entry-box">₹${row.entry}</td>
+                                <td class="negative">₹${row.stop_loss}</td>
+                                <td class="positive">₹${row.target1}</td>
+                                <td class="positive">₹${row.target2}</td>
+                                <td><strong>${row.risk_reward}</strong></td>
+                                <td style="font-size: 0.9em;">${row.strategy}</td>
+                                <td>${row.rsi}</td>
+                                <td>${row.volume_ratio}x</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                        
+                        // Show table, hide loading
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('data-table').style.display = 'table';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading data:', error);
+                    document.getElementById('loading').textContent = 'Error loading data. Please refresh.';
+                });
+        }
+        
+        function refreshData() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').textContent = 'Refreshing data...';
+            document.getElementById('data-table').style.display = 'none';
+            
+            fetch('/api/refresh')
+                .then(() => loadData())
+                .catch(error => console.error('Error refreshing:', error));
+        }
+        
+        // Load data on page load
+        loadData();
+        
+        // Auto-refresh every 5 minutes
+        setInterval(loadData, 300000);
+    </script>
+</body>
+</html>
