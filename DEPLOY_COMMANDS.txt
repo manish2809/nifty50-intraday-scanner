@@ -1,5 +1,6 @@
 ═══════════════════════════════════════════════════════════════
   QUICK DEPLOYMENT COMMANDS - Copy & Paste
+  UPDATED: Python 3.10 for Render Compatibility
 ═══════════════════════════════════════════════════════════════
 
 STEP 1: Navigate to Web_Scanner folder
@@ -67,13 +68,17 @@ All dependencies are now compatible - should work!
 
 
 ═══════════════════════════════════════════════════════════════
-  WHAT'S FIXED
+  WHAT'S FIXED (LATEST UPDATE)
 ═══════════════════════════════════════════════════════════════
 
-✅ Python version: 3.11.9 (stable)
+✅ Python version: 3.10.14 (most stable for pandas on Render)
+✅ Pandas version: 2.0.3 (pre-compiled wheels available)
+✅ Numpy version: 1.24.3 (compatible with pandas 2.0.3)
 ✅ Removed TA-Lib (no C compilation needed)
-✅ Updated pandas to 2.2.0 (compatible)
 ✅ All indicators now use pure Python/pandas
 ✅ Ready for Render free tier
+
+Python 3.10 is the sweet spot - newer versions (3.11+, 3.14) have
+compilation issues with pandas on Render's infrastructure.
 
 ═══════════════════════════════════════════════════════════════
