@@ -1,0 +1,79 @@
+═══════════════════════════════════════════════════════════════
+  QUICK DEPLOYMENT COMMANDS - Copy & Paste
+═══════════════════════════════════════════════════════════════
+
+STEP 1: Navigate to Web_Scanner folder
+────────────────────────────────────────────────────────────────
+cd Web_Scanner
+
+
+STEP 2: Initialize Git and Push to GitHub
+────────────────────────────────────────────────────────────────
+git init
+git add .
+git commit -m "Initial commit - Nifty 50 Intraday Scanner"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/nifty50-intraday-scanner.git
+git push -u origin main
+
+⚠️ IMPORTANT: Replace YOUR_USERNAME with your actual GitHub username!
+
+
+STEP 3: Deploy on Render (Manual Steps)
+────────────────────────────────────────────────────────────────
+1. Go to: https://render.com
+2. Sign up with GitHub
+3. Click: "New +" → "Web Service"
+4. Connect repository: nifty50-intraday-scanner
+5. Configure:
+   Name: nifty50-scanner
+   Environment: Python 3
+   Build Command: pip install -r requirements.txt
+   Start Command: gunicorn app:app
+   Plan: Free
+6. Click: "Create Web Service"
+
+
+STEP 4: Future Updates (After Initial Deployment)
+────────────────────────────────────────────────────────────────
+git add .
+git commit -m "Description of your changes"
+git push
+
+Render will automatically redeploy!
+
+
+═══════════════════════════════════════════════════════════════
+  TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════
+
+If git says "not a git repository":
+────────────────────────────────────────────────────────────────
+Make sure you're in the Web_Scanner folder:
+cd Web_Scanner
+
+
+If git push fails with "remote already exists":
+────────────────────────────────────────────────────────────────
+git remote remove origin
+git remote add origin https://github.com/YOUR_USERNAME/nifty50-intraday-scanner.git
+git push -u origin main
+
+
+If Render build fails:
+────────────────────────────────────────────────────────────────
+Check the logs in Render dashboard for specific errors.
+All dependencies are now compatible - should work!
+
+
+═══════════════════════════════════════════════════════════════
+  WHAT'S FIXED
+═══════════════════════════════════════════════════════════════
+
+✅ Python version: 3.11.9 (stable)
+✅ Removed TA-Lib (no C compilation needed)
+✅ Updated pandas to 2.2.0 (compatible)
+✅ All indicators now use pure Python/pandas
+✅ Ready for Render free tier
+
+═══════════════════════════════════════════════════════════════

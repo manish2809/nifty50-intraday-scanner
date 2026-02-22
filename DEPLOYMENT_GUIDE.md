@@ -148,33 +148,7 @@ Your service is live at https://nifty50-scanner.onrender.com
 2. Verify all files are pushed to GitHub
 3. Check `requirements.txt` is correct
 
-**Error: "TA-Lib installation failed"**
-
-**Solution:**
-TA-Lib requires compilation. For Render free tier, we need to use a workaround.
-
-Edit `requirements.txt` and remove `TA-Lib==0.4.28`, then update `app.py` to use pandas-based RSI:
-
-```python
-def calculate_rsi(data, period=14):
-    delta = data.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-    rs = gain / loss
-    return 100 - (100 / (1 + rs))
-
-# Replace ta.RSI with:
-rsi = calculate_rsi(df['Close'], timeperiod=14).iloc[-1]
-```
-
-Then push changes:
-```bash
-git add .
-git commit -m "Fix TA-Lib dependency"
-git push
-```
-
-Render will auto-deploy the update.
+**Note:** TA-Lib has been removed from this version to ensure compatibility with Render's free tier. All technical indicators now use pandas-based calculations.
 
 ---
 

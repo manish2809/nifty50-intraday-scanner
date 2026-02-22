@@ -1,7 +1,6 @@
 Flask==3.0.0
-pandas==2.1.4
-numpy==1.26.2
+pandas==2.2.0
+numpy==1.26.4
 yfinance==0.2.33
-TA-Lib==0.4.28
 gunicorn==21.2.0
 Werkzeug==3.0.1

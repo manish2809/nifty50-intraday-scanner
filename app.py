@@ -7,7 +7,6 @@ from flask import Flask, render_template, jsonify
 import pandas as pd
 import numpy as np
 import yfinance as yf
-import talib as ta
 from datetime import datetime, timedelta
 import os
 
@@ -43,6 +42,22 @@ def calculate_atr(df, period=14):
     tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
     atr = tr.rolling(window=period).mean()
     return atr.iloc[-1] if len(atr) > 0 else 0
+
+
+def calculate_rsi(data, period=14):
+    """Calculate RSI using pandas"""
+    delta = data.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi.iloc[-1] if len(rsi) > 0 else 50
+
+
+def calculate_ema(data, period):
+    """Calculate EMA using pandas"""
+    ema = data.ewm(span=period, adjust=False).mean()
+    return ema.iloc[-1] if len(ema) > 0 else data.iloc[-1]
 
 
 
@@ -85,9 +100,9 @@ def analyze_stock(df, ticker):
         atr_pct = (atr / close) * 100 if close > 0 else 0
         vwap = ((df['High'] + df['Low'] + df['Close']) / 3 * df['Volume']).sum() / df['Volume'].sum()
         vwap_distance = ((close - vwap) / vwap) * 100
-        rsi = ta.RSI(df['Close'], timeperiod=14).iloc[-1]
-        ema9 = ta.EMA(df['Close'], timeperiod=9).iloc[-1]
-        ema21 = ta.EMA(df['Close'], timeperiod=21).iloc[-1]
+        rsi = calculate_rsi(df['Close'], period=14)
+        ema9 = calculate_ema(df['Close'], period=9)
+        ema21 = calculate_ema(df['Close'], period=21)
         volume_ratio = volume / avg_volume if avg_volume > 0 else 0
         price_change_pct = ((close - prev_close) / prev_close) * 100
         
