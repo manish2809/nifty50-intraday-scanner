@@ -98,13 +98,15 @@ Fill in the following:
 | **Start Command** | `gunicorn app:app` |
 | **Plan** | **Free** |
 
-#### 3.4 Advanced Settings (Optional)
+#### 3.4 Advanced Settings (CRITICAL!)
 
-Click **"Advanced"** and add:
+Click **"Advanced"** and add this environment variable:
 
 | Environment Variable | Value |
 |---------------------|-------|
-| `PYTHON_VERSION` | `3.11.7` |
+| `PYTHON_VERSION` | `3.10.14` |
+
+**This is critical!** Without this, Render may use Python 3.14 which causes pandas compilation errors.
 
 #### 3.5 Deploy
 
