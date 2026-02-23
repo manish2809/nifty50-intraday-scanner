@@ -8,22 +8,23 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 from datetime import datetime, timedelta
+import pytz
 import os
 
 app = Flask(__name__)
 
-# Nifty 50 tickers
+# Nifty 50 tickers (Updated as of Sep 30, 2024 - Added BEL & TRENT, Removed DIVISLAB & LTIM)
 TICKERS = [
     "ADANIENT.NS", "ADANIPORTS.NS", "APOLLOHOSP.NS", "ASIANPAINT.NS", "AXISBANK.NS",
-    "BAJAJ-AUTO.NS", "BAJFINANCE.NS", "BAJAJFINSV.NS", "BPCL.NS", "BHARTIARTL.NS",
-    "BRITANNIA.NS", "CIPLA.NS", "COALINDIA.NS", "DIVISLAB.NS", "DRREDDY.NS",
+    "BAJAJ-AUTO.NS", "BAJFINANCE.NS", "BAJAJFINSV.NS", "BEL.NS", "BPCL.NS",
+    "BHARTIARTL.NS", "BRITANNIA.NS", "CIPLA.NS", "COALINDIA.NS", "DRREDDY.NS",
     "EICHERMOT.NS", "GRASIM.NS", "HCLTECH.NS", "HDFCBANK.NS", "HDFCLIFE.NS",
     "HEROMOTOCO.NS", "HINDALCO.NS", "HINDUNILVR.NS", "ICICIBANK.NS", "ITC.NS",
     "INDUSINDBK.NS", "INFY.NS", "JSWSTEEL.NS", "KOTAKBANK.NS", "LT.NS",
-    "M&M.NS", "MARUTI.NS", "NTPC.NS", "NESTLEIND.NS", "ONGC.NS",
+    "M&M.NS", "MARUTI.NS", "NESTLEIND.NS", "NTPC.NS", "ONGC.NS",
     "POWERGRID.NS", "RELIANCE.NS", "SBILIFE.NS", "SBIN.NS", "SUNPHARMA.NS",
-    "TCS.NS", "TATACONSUM.NS", "TMCV.NS", "TATASTEEL.NS", "TECHM.NS",
-    "TITAN.NS", "UPL.NS", "ULTRACEMCO.NS", "WIPRO.NS", "ETERNAL.NS"
+    "TCS.NS", "TATACONSUM.NS", "TATASTEEL.NS", "TECHM.NS", "TITAN.NS",
+    "TMCV.NS", "TRENT.NS", "ULTRACEMCO.NS", "UPL.NS", "WIPRO.NS", "ETERNAL.NS"
 ]
 
 # Cache for scanner data (refresh every 5 minutes)
@@ -177,11 +178,15 @@ def get_scanner_data():
     start_date = end_date - timedelta(days=60)
     
     try:
+        print(f"[Scanner] Downloading data for {len(TICKERS)} stocks...")
         data = yf.download(TICKERS, start=start_date, end=end_date, group_by='ticker', 
                           auto_adjust=True, threads=True, progress=False)
         
+        print(f"[Scanner] Data downloaded. Shape: {data.shape}")
+        
         # Analyze all stocks
         results = []
+        errors = 0
         for ticker in TICKERS:
             try:
                 df = data[ticker][['Open', 'High', 'Low', 'Close', 'Volume']].dropna()
@@ -189,8 +194,14 @@ def get_scanner_data():
                     result = analyze_stock(df, ticker)
                     if result:
                         results.append(result)
-            except:
+                else:
+                    errors += 1
+            except Exception as e:
+                errors += 1
+                print(f"[Scanner] Error analyzing {ticker}: {e}")
                 continue
+        
+        print(f"[Scanner] Analysis complete: {len(results)} stocks, {errors} errors")
         
         # Sort by score
         results.sort(key=lambda x: x['score'], reverse=True)
@@ -201,7 +212,7 @@ def get_scanner_data():
         
         return results
     except Exception as e:
-        print(f"Error fetching data: {e}")
+        print(f"[Scanner] Error fetching data: {e}")
         return []
 
 
@@ -221,9 +232,14 @@ def api_scanner():
     buy = len([x for x in data if x['signal'] == 'BUY'])
     avg_rr = sum([x['risk_reward'] for x in data]) / len(data) if data else 0
     
+    # Convert UTC to IST (UTC + 5:30)
+    utc_now = datetime.now(pytz.UTC)
+    ist_tz = pytz.timezone('Asia/Kolkata')
+    ist_time = utc_now.astimezone(ist_tz)
+    
     return jsonify({
         'success': True,
-        'timestamp': datetime.now().strftime('%d %B %Y, %I:%M %p IST'),
+        'timestamp': ist_time.strftime('%d %B %Y, %I:%M %p IST'),
         'stats': {
             'total': len(data),
             'strong_buy': strong_buy,
